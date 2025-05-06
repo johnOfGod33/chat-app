@@ -9,11 +9,12 @@ const swaggerFile = require("./config/swagger-output.json");
 app.use(cors());
 app.use(express.json());
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
-
 app.get("/", (req: Request, res: Response) => {
-  res.send(`Hello world this is the swagger file ${swaggerFile}`);
+  res.send(`Hello world`);
 });
 
 app.listen(PORT, () => {
-  console.log(`server runing at port ${PORT}`);
+  console.log(
+    `server is runing, check docs at :  http://localhost:${PORT}/docs`
+  );
 });
