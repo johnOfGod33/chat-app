@@ -7,7 +7,8 @@
     "build": "pnpm run lint-fix && npx tsc",
     "lint-fix": "npx eslint --fix 'src/**/*.ts'",
     "lint": "npx eslint 'src/**/*.ts'",
-    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/server.js\""
+    "start": "node ./dist/config/swagger.js && node ./dist/server.js",
+    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"pnpm run start\""
   },
   "repository": {
     "type": "git",
@@ -20,10 +21,12 @@
   },
   "homepage": "https://github.com/johnOfGod33/backend-node-boilerplate#readme",
   "dependencies": {
+    "@types/swagger-ui-express": "^4.1.8",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
@@ -32,6 +35,7 @@
     "@types/node": "^22.6.1",
     "@types/yargs": "^17.0.33",
     "globals": "^15.9.0",
+    "swagger-autogen": "^2.23.7",
     "tsc-watch": "^6.2.1",
     "typescript": "^5.6.2",
     "typescript-eslint": "^8.7.0"
