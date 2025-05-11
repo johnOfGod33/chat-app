@@ -1,3 +1,11 @@
-node_modules
+node_modules/
 dist
 .env
+
+
+# frontend
+.DS_Store
+
+## React Router
+.react-router/
+/frontend/build/
