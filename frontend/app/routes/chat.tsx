@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-
+import { Link, useLocation } from "react-router";
+import socket from "~/utils/socket";
 interface Message {
   name: string;
   profileImgUrl: string;
   text: string;
 }
 
-const Chat: React.FC = () => {
+const Chat = () => {
+  const location = useLocation();
+  const { username } = location.state || { from: { pathname: "/" } }; // Get username from location sta
   const [message, setMessage] = useState("");
   const [isInChat, setIsInChat] = useState(true); // State to toggle chat form
   const [messages, setMessages] = useState<Message[]>([]); // State to store chat messages
@@ -15,10 +18,12 @@ const Chat: React.FC = () => {
   const handleLeaveChat = () => {
     if (isInChat) {
       setIsInChat(false); // Toggle to leave chat
+      socket.disconnect(); // Emit disconnect event
     } else {
       // Logic to join another room (e.g., redirect to a room selection page)
       setIsInChat(true); // Reset to join chat
       setMessages([]); // Clear messages when joining a new room
+      socket.connect();
       console.log("messages cleared");
       console.log("Joining another room...");
     }
@@ -28,13 +33,13 @@ const Chat: React.FC = () => {
     e.preventDefault();
     if (message.trim()) {
       const newMessage: Message = {
-        name: "User", // Replace with actual user name
+        name: username ? username : "Anonymous",
         profileImgUrl:
           "https://preview.redd.it/yta0xtiii3m21.jpg?width=640&crop=smart&auto=webp&s=e025206b98f5bc3e3628b8bb433e6085b4a2929f", // Replace with actual user image URL
         text: message,
       };
-      setMessages((prevMessages) => [...prevMessages, newMessage]); // Add new message to the list
-      setMessage(""); // Clear the input after sending
+
+      socket.emit("new_message", newMessage);
     }
   };
 
@@ -43,15 +48,33 @@ const Chat: React.FC = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+
+    if (username) {
+      socket.auth = { username };
+      socket.connect();
+    }
+
+    socket.on("connect_error", (error) => {
+      if (error.message === "invalid username") {
+        console.error("Invalid username");
+      }
+    });
+
+    socket.on("receive_message", (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+      setMessage(""); // Clear the input after sending
+    });
+  }, [socket]);
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold">Chat Room</h1>
+        <Link to="/">
+          <h1 className="text-3xl font-bold">Chat Room</h1>
+        </Link>
         <button
           onClick={handleLeaveChat}
-          className={`font-bold py-2 px-4 rounded transition duration-300 ${
+          className={`font-bold py-2 px-4 rounded transition duration-300 cursor-pointer ${
             isInChat
               ? "bg-red-600 hover:bg-red-700"
               : "bg-[#9300EE] hover:bg-[#7a00b3]"
