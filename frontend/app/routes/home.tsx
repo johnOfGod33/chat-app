@@ -6,7 +6,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-[#9300EE] to-[#DEDEDE] text-white">
-      <h1 className="text-5xl font-bold mb-4">Welcome to ChatApp</h1>
+      <h1 className="text-5xl font-bold mb-4">Welcome to Free Chat !</h1>
       <p className="text-lg mb-8 text-center max-w-md">
         Connect with anonymous people and have interesting conversations. No
         sign-up required, just click the button below to start chatting!
