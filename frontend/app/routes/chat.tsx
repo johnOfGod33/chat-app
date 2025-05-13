@@ -64,12 +64,18 @@ const Chat = () => {
       setMessages((prevMessages) => [...prevMessages, message]);
       setMessage(""); // Clear the input after sending
     });
+
+    return () => {
+      socket.off("receive_message"); // Clean up the event listener
+      socket.off("connect_error"); // Clean up the event listener
+      socket.off("send_message"); // Clean up the event listener
+    };
   }, [socket]);
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white p-4">
       <div className="flex justify-between items-center mb-4">
-        <Link to="/">
+        <Link to="/" onClick={() => socket.disconnect()}>
           <h1 className="text-3xl font-bold">Chat Room</h1>
         </Link>
         <button
