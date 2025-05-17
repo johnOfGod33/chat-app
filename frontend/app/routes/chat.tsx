@@ -43,6 +43,13 @@ const Chat = () => {
     }
   };
 
+  const cleanupSocketEvents = () => {
+    console.log("clean up the");
+    socket.off("receive_message"); // Clean up the event listener
+    socket.off("connect_error");
+    socket.off("send_message");
+  };
+
   // Scroll to the bottom of the messages when a new message is added
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -65,11 +72,7 @@ const Chat = () => {
       setMessage(""); // Clear the input after sending
     });
 
-    return () => {
-      socket.off("receive_message"); // Clean up the event listener
-      socket.off("connect_error"); // Clean up the event listener
-      socket.off("send_message"); // Clean up the event listener
-    };
+    return () => cleanupSocketEvents();
   }, [socket]);
 
   return (
